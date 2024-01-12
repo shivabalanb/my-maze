@@ -1,4 +1,5 @@
-import { cols, rows } from "../components/Maze";
+import { cols, rows, speed } from "../components/Maze";
+import { Node, Position, Status } from "../components/Tile";
 
 /**
  * Recursive Backtracking:
@@ -36,17 +37,20 @@ Generates mazes with a bias in paths, leading to a diagonal or vertical/horizont
  * how many await update do you need?
  */
 export class Algorithm {
-  constructor(state, setState) {
+  temp: Node[][];
+  setState: Function;
+  speed: number;
+  constructor(state: Node[][], setState: Function) {
     this.temp = state; // algorithm temp state where changes are made
     this.setState = setState; // change to state(render): changes actually go into effect
-    this.speed = 20; // render speed
+    this.speed = speed; // render speed
   }
 
   async algorithm() {
     // dummy algo: selects all tiles
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
-        this.temp[i][j].selected = true;
+        this.temp[i][j].status = Status.Visited;
         await this.update();
       }
     }
@@ -58,20 +62,26 @@ export class Algorithm {
     await new Promise((resolve) => setTimeout(resolve, speed));
   }
 
-  /* valid neigboring nodes based pos  */
-  getNeighbors(pos) {
-    let [r, c] = [rows, cols];
-    let neighbors = [];
+  async setStatus(pos: Position, status: Status, update: boolean = false) {
     let { x, y } = pos;
-    if (x > 0) neighbors.push({ x: x - 1, y: y });
-    if (x < r - 1) neighbors.push({ x: x + 1, y: y });
-    if (y > 0) neighbors.push({ x: x, y: y - 1 });
-    if (y < c - 1) neighbors.push({ x: x, y: y + 1 });
-    return neighbors;
+    this.temp[x][y].status = status;
+    if (update) await this.update(); // update render
+  }
+
+  /* valid neigboring nodes based pos  */
+  getNeighbors(pos: Position, random: boolean = false) {
+    let [r, c] = [rows, cols];
+    let neighbors: Position[] = [];
+    let { x, y } = pos;
+    if (x > 0) neighbors.push({ x: x - 1, y: y }); // top
+    if (x < r - 1) neighbors.push({ x: x + 1, y: y }); // bottom
+    if (y > 0) neighbors.push({ x: x, y: y - 1 }); // left
+    if (y < c - 1) neighbors.push({ x: x, y: y + 1 }); // right
+    return random ? neighbors.sort(() => Math.random() - 0.5) : neighbors;
   }
 
   /* assuming outside and inside are adjacent, handles wall removal  */
-  removeWall(outside, inside) {
+  removeWall(outside: Position, inside: Position) {
     let { temp } = this;
     let [x1, y1] = [outside.x, outside.y];
     let [x2, y2] = [inside.x, inside.y];
@@ -100,7 +110,7 @@ export class Algorithm {
     }
   }
 
-  getRandomPosition() {
+  getRandomPosition(): Position {
     return {
       x: this.random(rows),
       y: this.random(cols),
@@ -108,19 +118,27 @@ export class Algorithm {
   }
 
   /* auxilary */
-  random(max) {
+  random(max: number) {
     return Math.floor(Math.random() * max); // min 0, max excluded
   }
 
+  getRandomHexColor(): string {
+    // Generate a random hexadecimal color code
+    const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+
+    // Ensure the color code has 6 digits by padding with zeros if needed
+    return "#" + "0".repeat(6 - randomColor.length) + randomColor;
+  }
+
   /* set functions */
-  findInSet(set, obj) {
+  findInSet(set: Set<Position>, obj: Position) {
     for (const a of set) {
       if (a.x == obj.x && a.y == obj.y) return true;
     }
     return false;
   }
 
-  popRandomSet(set, del = true) {
+  popRandomSet(set: Set<Position>, del = true): Position {
     let r_index = Math.floor(Math.random() * set.size);
 
     let i = 0;
@@ -131,5 +149,6 @@ export class Algorithm {
       }
       i++;
     }
+    return { x: -1, y: -1 };
   }
 }

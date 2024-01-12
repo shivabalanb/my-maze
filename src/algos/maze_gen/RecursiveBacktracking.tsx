@@ -1,8 +1,11 @@
 import React from "react";
 import { Algorithm } from "../Algorithm";
+import { Node, Position, Status } from "../../components/Tile";
 
 export class RecursiveBacktracking extends Algorithm {
-  constructor(state, setState) {
+  visited: Position[];
+
+  constructor(state: Node[][], setState: Function) {
     super(state, setState);
     this.visited = [];
   }
@@ -12,35 +15,32 @@ export class RecursiveBacktracking extends Algorithm {
     await this.recursiveHelper(start);
   }
 
-  getRandomUnvisitedNeighbors(start) {
-    let unvisitedNeighbors = this.getNeighbors(start).filter((n) =>
-      this.isUnvisited(n)
-    );
-    return unvisitedNeighbors.sort(() => Math.random() - 0.5);
-  }
-
-  async recursiveHelper(cur) {
-    console.log("running", this.visited);
+  async recursiveHelper(cur:Position) {
     if (!cur) return;
     this.visited.push(cur);
-
     let { x, y } = cur;
-    this.temp[x][y].selected = true;
-    await this.update(); // update render
+    this.temp[x][y].status = Status.Current;
     for (const i of this.getRandomUnvisitedNeighbors(cur)) {
       if (this.isUnvisited(i)) {
-        let { a, b } = i;
-        this.temp[a][b].selected = false;
-        // this.temp[a][b].frontier = true;
-        await this.update(); // update render
+        let { x, y } = i;
+        this.temp[x][y].status = Status.Visited;
         this.removeWall(i, cur);
+        await this.update(); // update render
         await this.recursiveHelper(i);
       }
     }
     return;
   }
 
-  isUnvisited(pos) {
+  getRandomUnvisitedNeighbors(start:Position) {
+    let unvisitedNeighbors = this.getNeighbors(start).filter((n) =>
+      this.isUnvisited(n)
+    );
+    return unvisitedNeighbors.sort(() => Math.random() - 0.5);
+  }
+
+
+  isUnvisited(pos:Position) {
     return !this.visited.some((obj) => obj.x == pos.x && obj.y == pos.y);
   }
 }

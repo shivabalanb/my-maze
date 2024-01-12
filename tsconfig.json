@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es2015", // The version of ECMAScript you want to target
+    "lib": ["dom", "dom.iterable", "esnext"], // The libraries to include
+    "jsx": "react", // Specify JSX code generation (react, preserve, or react-native)
+    "module": "esnext", // Specify module code generation (commonjs, esnext, es2015, etc.)
+    "moduleResolution": "node", // Specify module resolution strategy (node, classic)
+    "esModuleInterop": true, // Enable compatibility with CommonJS imports
+    "skipLibCheck": true, // Skip type checking of declaration files
+    "forceConsistentCasingInFileNames": true, // Enforce consistent file casing
+    "strict": true, // Enable all strict type-checking options
+    "allowJs": true, // Allow JavaScript files to be included
+    "isolatedModules": true, // Ensure each file is a separate module
+    "noEmit": true, // Do not emit output files
+    "declaration": true // Generate corresponding .d.ts files
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"], // Specify the files to include in the compilation
+  "exclude": ["node_modules", "build"] // Specify the files to exclude from the compilation
+}
