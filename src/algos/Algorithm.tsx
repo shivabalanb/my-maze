@@ -118,8 +118,8 @@ export class Algorithm {
   }
 
   /* auxilary */
-  random(max: number) {
-    return Math.floor(Math.random() * max); // min 0, max excluded
+  random(max: number, min: number = 0) {
+    return Math.floor(Math.random() * (max - min)) + min;
   }
 
   getRandomHexColor(): string {

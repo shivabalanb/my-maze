@@ -5,13 +5,14 @@ import { Prims } from "../algos/maze_gen/Prims";
 import { RecursiveBacktracking } from "../algos/maze_gen/RecursiveBacktracking";
 import { Kruskals } from "../algos/maze_gen/Kruskals";
 import { Ellers } from "../algos/maze_gen/Ellers";
+import { RecursiveDivision } from "../algos/maze_gen/RecursiveDivision";
 
 // context api? way to share, maybe im overcomplicating, weird random error when changing
-const s = 15;
+const s = 20;
 export const rows = s;
 export const cols = s;
-export const speed = 10;
-export const [tileSize, borderWidth] = [20, 4];
+export const speed = 5;
+export const [tileSize, borderWidth] = [25, 4];
 
 /**
  * step,play,reset button functionality needed
@@ -70,22 +71,13 @@ const Maze: FC = () => {
   const recursiveBacktracking = new RecursiveBacktracking(state, setState);
   const kruskals = new Kruskals(state, setState);
   const ellers = new Ellers(state, setState);
+  const recursiveDivision = new RecursiveDivision(state, setState);
   return (
     <>
       <div className=" flex flex-col gap-4 items-center ">
         {/* <div>{renderTile()}</div> */}
         <div>{state && renderMaze()}</div>
         <div className="flex w-32 justify-around text-xs text-white">
-          <button
-            onClick={async () => {
-              startStop();
-              await prims.algorithm();
-              reset();
-            }}
-            className="p-2 px-4  bg-black rounded-md"
-          >
-            Prims
-          </button>
           <button
             onClick={async () => {
               startStop();
@@ -96,6 +88,17 @@ const Maze: FC = () => {
           >
             Recursive
           </button>
+          {/* <button
+            onClick={async () => {
+              startStop();
+              await prims.algorithm();
+              reset();
+            }}
+            className="p-2 px-4  bg-black rounded-md"
+          >
+            Prims
+          </button>
+          
           <button
             onClick={async () => {
               startStop();
@@ -115,6 +118,16 @@ const Maze: FC = () => {
             className="p-2 px-4  bg-black rounded-md"
           >
             Ellers
+          </button> */}
+          <button
+            onClick={async () => {
+              // startStop();
+              await recursiveDivision.algorithm();
+              // reset();
+            }}
+            className="p-2 px-4  bg-black rounded-md"
+          >
+            Division
           </button>
           {/* <button
             onClick={() => setState(initState())}

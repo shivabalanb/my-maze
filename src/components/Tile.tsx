@@ -119,7 +119,7 @@ export const Tile: FC<{ node: Node }> = ({ node }) => {
                 ? "#6b7280"
                 : "#020617",
           }}
-          transition={{ duration: 0.2 }}
+          // transition={{ duration: 0.2 }}
           className=" h-full text-center text-xl "
         >
           {/* {x},{y} */}

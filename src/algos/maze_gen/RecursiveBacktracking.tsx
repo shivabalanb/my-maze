@@ -15,7 +15,7 @@ export class RecursiveBacktracking extends Algorithm {
     await this.recursiveHelper(start);
   }
 
-  async recursiveHelper(cur:Position) {
+  async recursiveHelper(cur: Position) {
     if (!cur) return;
     this.visited.push(cur);
     let { x, y } = cur;
@@ -25,22 +25,22 @@ export class RecursiveBacktracking extends Algorithm {
         let { x, y } = i;
         this.temp[x][y].status = Status.Visited;
         this.removeWall(i, cur);
-        await this.update(); // update render
         await this.recursiveHelper(i);
       }
     }
+    await this.update(); // update render
+
     return;
   }
 
-  getRandomUnvisitedNeighbors(start:Position) {
+  getRandomUnvisitedNeighbors(start: Position) {
     let unvisitedNeighbors = this.getNeighbors(start).filter((n) =>
       this.isUnvisited(n)
     );
     return unvisitedNeighbors.sort(() => Math.random() - 0.5);
   }
 
-
-  isUnvisited(pos:Position) {
+  isUnvisited(pos: Position) {
     return !this.visited.some((obj) => obj.x == pos.x && obj.y == pos.y);
   }
 }
