@@ -1,10 +1,10 @@
-import { cols, rows } from "../../components/Maze";
+import { MazeSettings } from "../../components/Maze";
 import { Node, Position, Status } from "../../components/Tile";
 import { Algorithm } from "../Algorithm";
 
 export class RecursiveDivision extends Algorithm {
-  constructor(state: Node[][], setState: Function) {
-    super(state, setState);
+  constructor(state: Node[][], setState: Function, mazeSettings: MazeSettings) {
+    super(state, setState, mazeSettings);
   }
 
   async algorithm() {
@@ -14,9 +14,9 @@ export class RecursiveDivision extends Algorithm {
 
   async helper(
     rMin: number = 1,
-    rMax: number = rows - 1,
+    rMax: number = this.rows - 1,
     cMin: number = 0,
-    cMax: number = cols - 2
+    cMax: number = this.cols - 2
   ) {
     // borders-> vertical: right, horizontal: top: because topBorder depends on rightborder
     if (cMax < cMin && rMax < rMin) return;
@@ -81,6 +81,7 @@ export class RecursiveDivision extends Algorithm {
   }
 
   async removeAllWalls() {
+    let [rows, cols] = [this.rows, this.cols];
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
         let [top, right, bottom, left] = [true, true, true, true];

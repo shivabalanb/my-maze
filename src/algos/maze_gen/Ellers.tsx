@@ -1,17 +1,20 @@
-import { cols, rows } from "../../components/Maze";
+
+import { MazeSettings } from "../../components/Maze";
 import { Node, Position, Status } from "../../components/Tile";
 import { Algorithm } from "../Algorithm";
+
 
 export class Ellers extends Algorithm {
   color: { [key: string]: Position[] }; // color -> edges
   edges: { [key: string]: Position[] };
-  constructor(state: Node[][], setState: Function) {
-    super(state, setState);
+
+  constructor(state: Node[][], setState: Function, mazeSettings:MazeSettings) {
+    super(state, setState,mazeSettings);
     this.color = {};
     this.edges = {};
   }
   async algorithm() {
-    for (let i = 0; i < rows; i++) {
+    for (let i = 0; i < this.rows; i++) {
       await this.assignNodesWithoutColor(i);
       // adjacent connection
       await this.handleAdjacentConnect(i);
@@ -21,7 +24,7 @@ export class Ellers extends Algorithm {
   }
 
   async handleVerticalConnect(i: number) {
-    if (i != rows - 1) {
+    if (i != this.rows - 1) {
       for (const color of Object.keys(this.color)) {
         let colorNodesInRow = this.color[color].filter((obj) => obj.x == i);
         let mustConnect = this.random(colorNodesInRow.length);
@@ -41,17 +44,17 @@ export class Ellers extends Algorithm {
   }
 
   async handleAdjacentConnect(i: number) {
-    for (let j = 0; j < cols; j++) {
+    for (let j = 0; j < this.cols; j++) {
       let aNode = this.temp[i][j];
       const lastRowCondition =
-        i == rows - 1 &&
-        j != cols - 1 &&
+        i == this.rows - 1 &&
+        j != this.cols - 1 &&
         aNode.color != this.temp[i][j + 1].color;
-      if (i == rows - 1 && !lastRowCondition) continue;
+      if (i == this.rows - 1 && !lastRowCondition) continue;
       if (lastRowCondition || this.random(2) == 1) {
         let bNode;
         if (lastRowCondition || j == 0) bNode = this.temp[i][j + 1];
-        else if (j == cols - 1) bNode = this.temp[i][j - 1];
+        else if (j == this.cols - 1) bNode = this.temp[i][j - 1];
         else {
           bNode = this.random(2) ? this.temp[i][j + 1] : this.temp[i][j - 1];
         }
@@ -71,7 +74,7 @@ export class Ellers extends Algorithm {
   }
 
   async assignNodesWithoutColor(row: number) {
-    for (let j = 0; j < cols; j++) {
+    for (let j = 0; j < this.cols; j++) {
       // 1. unasigned tiles -> set
       let node = this.temp[row][j];
       if (node.status != Status.Color) {

@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 import { motion } from "framer-motion";
-import { borderWidth, tileSize } from "./Maze";
+import { TileSettings } from "./Maze";
 
 export enum Status {
   Visited,
@@ -48,12 +48,19 @@ export class Node {
   }
 }
 
+interface TileProps {
+  key: number;
+  node: Node;
+  tileSettings: TileSettings;
+}
+
 /** where should tileSize, borderWidth be?
  * work on framer motion
  * could border be simpler/better understanding css */
-export const Tile: FC<{ node: Node }> = ({ node }) => {
+export const Tile: FC<TileProps> = ({ node, tileSettings }) => {
   const { x, y } = node.pos;
   let [top, right, bottom, left] = node.walls;
+  const { tileSize, borderWidth } = tileSettings;
   const borderColor = " bg-black";
 
   return (

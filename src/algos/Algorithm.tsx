@@ -1,4 +1,4 @@
-import { cols, rows, speed } from "../components/Maze";
+import { MazeSettings } from "../components/Maze";
 import { Node, Position, Status } from "../components/Tile";
 
 /**
@@ -36,20 +36,32 @@ Generates mazes with a bias in paths, leading to a diagonal or vertical/horizont
  * don't know if need separate class
  * how many await update do you need?
  */
+
+export interface AlgorithmProps {
+  temp: Node[][];
+  setState: Function;
+  mazeSettings: MazeSettings;
+}
+
 export class Algorithm {
   temp: Node[][];
   setState: Function;
+  rows: number;
+  cols: number;
   speed: number;
-  constructor(state: Node[][], setState: Function) {
-    this.temp = state; // algorithm temp state where changes are made
+
+  constructor(state: Node[][], setState: Function, mazeSettings: MazeSettings) {
+    this.temp = [...state]; // algorithm temp state where changes are made
     this.setState = setState; // change to state(render): changes actually go into effect
-    this.speed = speed; // render speed
+    this.rows = mazeSettings.rows;
+    this.cols = mazeSettings.cols;
+    this.speed = mazeSettings.speed;
   }
 
   async algorithm() {
     // dummy algo: selects all tiles
-    for (let i = 0; i < rows; i++) {
-      for (let j = 0; j < cols; j++) {
+    for (let i = 0; i < this.rows; i++) {
+      for (let j = 0; j < this.cols; j++) {
         this.temp[i][j].status = Status.Visited;
         await this.update();
       }
@@ -70,7 +82,7 @@ export class Algorithm {
 
   /* valid neigboring nodes based pos  */
   getNeighbors(pos: Position, random: boolean = false) {
-    let [r, c] = [rows, cols];
+    let [r, c] = [this.rows, this.cols];
     let neighbors: Position[] = [];
     let { x, y } = pos;
     if (x > 0) neighbors.push({ x: x - 1, y: y }); // top
@@ -112,8 +124,8 @@ export class Algorithm {
 
   getRandomPosition(): Position {
     return {
-      x: this.random(rows),
-      y: this.random(cols),
+      x: this.random(this.rows),
+      y: this.random(this.cols),
     };
   }
 

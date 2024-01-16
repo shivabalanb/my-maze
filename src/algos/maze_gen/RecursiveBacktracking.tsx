@@ -1,12 +1,13 @@
 import React from "react";
 import { Algorithm } from "../Algorithm";
 import { Node, Position, Status } from "../../components/Tile";
+import { MazeSettings } from "../../components/Maze";
 
 export class RecursiveBacktracking extends Algorithm {
   visited: Position[];
 
-  constructor(state: Node[][], setState: Function) {
-    super(state, setState);
+  constructor(state: Node[][], setState: Function,mazeSettings:MazeSettings) {
+    super(state, setState,mazeSettings);
     this.visited = [];
   }
 

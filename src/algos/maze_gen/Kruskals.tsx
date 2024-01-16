@@ -1,6 +1,7 @@
-import { cols, rows } from "../../components/Maze";
+import { MazeSettings } from "../../components/Maze";
 import { Node, Position, Status } from "../../components/Tile";
 import { Algorithm } from "../Algorithm";
+
 
 interface edgeMeta {
   aStr: string;
@@ -16,8 +17,8 @@ interface edgeMeta {
 export class Kruskals extends Algorithm {
   color: { [key: string]: Position[] }; // color -> edges
   edges: { [key: string]: Position[] };
-  constructor(state: Node[][], setState: Function) {
-    super(state, setState);
+  constructor(state: Node[][], setState: Function,mazeSettings:MazeSettings) {
+    super(state, setState,mazeSettings);
     this.color = {};
     this.edges = {};
   }
@@ -27,7 +28,6 @@ export class Kruskals extends Algorithm {
     let i = 0;
     while (Object.keys(this.color).length != 1) {
       i++;
-      console.log(i);
 
       // a and b are the nodes sharing an edge to be connected
       const {
@@ -78,8 +78,8 @@ export class Kruskals extends Algorithm {
   }
 
   async setAllDefault() {
-    for (let i = 0; i < rows; i++) {
-      for (let j = 0; j < cols; j++) {
+    for (let i = 0; i < this.rows; i++) {
+      for (let j = 0; j < this.cols; j++) {
         this.temp[i][j].status = Status.Current;
       }
       await this.update(50);
@@ -116,8 +116,8 @@ export class Kruskals extends Algorithm {
   
 
   async initializeSets() {
-    for (let i = 0; i < rows; i++) {
-      for (let j = 0; j < cols; j++) {
+    for (let i = 0; i < this.rows; i++) {
+      for (let j = 0; j < this.cols; j++) {
         let setColor = this.getRandomHexColor();
         let pos = { x: i, y: j };
         this.color[setColor] = [pos];
